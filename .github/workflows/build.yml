@@ -1,69 +1,25 @@
-name: Build and Deploy Favicon Factory
+name: Deploy Favicon Factory
 
 on:
   push:
     branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v4
     
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
+    - name: Create dist folder
+      run: mkdir -p dist
     
-    - name: Install dependencies
-      run: npm ci
-    
-    - name: Build optimized version
+    - name: Copy files
       run: |
-        # Создаем папку для сборки
-        mkdir -p dist
-        
-        # Копируем основные файлы
-        cp *.html *.css *.js *.svg *.png dist/ 2>/dev/null || true
-        
-        # Копируем папки если они есть
-        cp -r icons/ dist/ 2>/dev/null || true
-        
-        echo "Basic files copied to dist/"
-    
-    - name: Run basic tests
-      run: |
-        # Простые проверки что файлы на месте
-        echo "Running basic validation..."
-        
-        if [ -f "dist/index.html" ]; then
-          echo "✓ index.html exists"
-        else
-          echo "✗ ERROR: index.html missing"
-          exit 1
-        fi
-        
-        if grep -q 'JSZip' dist/index.html || grep -q 'jszip' dist/index.html; then
-          echo "✓ JSZip dependency found"
-        else
-          echo "⚠ WARNING: JSZip not found in HTML"
-        fi
-        
-        echo "All basic tests passed!"
-    
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: favicon-factory-builds
-        path: dist/
-        retention-days: 30
+        cp -r *.html *.css *.js *.svg *.png icons/ dist/ 2>/dev/null || true
+        echo "Files copied successfully"
     
     - name: Deploy to GitHub Pages
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
