@@ -1,0 +1,119 @@
+name: Build and Deploy Favicon Factory
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: |
+        npm init -y
+        npm install --save-dev html-minifier-terser
+        npm install --save-dev clean-css-cli
+        npm install --save-dev terser
+    
+    - name: Build optimized version
+      run: |
+        # Создаем папку для сборки
+        mkdir -p dist
+        
+        # Минифицируем HTML и встроенные CSS/JS
+        npx html-minifier-terser \
+          --input-dir . \
+          --output-dir dist \
+          --file-ext html \
+          --collapse-whitespace \
+          --remove-comments \
+          --remove-optional-tags \
+          --remove-redundant-attributes \
+          --remove-script-type-attributes \
+          --remove-tag-whitespace \
+          --use-short-doctype \
+          --minify-css true \
+          --minify-js true
+        
+        # Создаем версию без отладочных console.log
+        sed -i 's/console\.log[^;]*;//g' dist/index.html
+        
+        echo "Build completed successfully"
+    
+    - name: Create different format builds
+      run: |
+        cd dist
+        
+        # Создаем standalone версию (single file)
+        cp index.html favicon-factory-standalone.html
+        
+        # Создаем версию с внешними зависимостями
+        mkdir -p separated
+        
+        # Извлекаем CSS в отдельный файл
+        grep -o '<style[^>]*>.*</style>' index.html | sed 's/<style[^>]*>//g' | sed 's/<\/style>//g' > separated/styles.css
+        
+        # Извлекаем JS в отдельный файл
+        grep -o '<script[^>]*>.*</script>' index.html | sed 's/<script[^>]*>//g' | sed 's/<\/script>//g' > separated/script.js
+        
+        # Создаем HTML с внешними ссылками
+        sed 's/<style[^>]*>.*<\/style>/<link rel="stylesheet" href="styles.css">/g' index.html | \
+        sed 's/<script[^>]*>.*<\/script>/<script src="script.js"><\/script>/g' > separated/index.html
+        
+        echo "Multiple formats created"
+    
+    - name: Run tests
+      run: |
+        # Базовые проверки
+        echo "Running basic validation..."
+        
+        # Проверяем что HTML валидный
+        if ! grep -q "<!doctype html>" dist/index.html; then
+          echo "ERROR: Missing DOCTYPE"
+          exit 1
+        fi
+        
+        # Проверяем что все необходимые элементы есть
+        if ! grep -q 'id="drop"' dist/index.html; then
+          echo "ERROR: Missing drop zone"
+          exit 1
+        fi
+        
+        if ! grep -q 'JSZip' dist/index.html; then
+          echo "ERROR: Missing JSZip dependency"
+          exit 1
+        fi
+        
+        if ! grep -q 'icojs' dist/index.html; then
+          echo "ERROR: Missing icojs dependency"
+          exit 1
+        fi
+        
+        echo "All tests passed!"
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: favicon-factory-builds
+        path: |
+          dist/
+        retention-days: 30
+    
+    - name: Deploy to GitHub Pages (if main branch)
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
+        cname: favicon-factory.yourdomain.com  # Замените на ваш домен

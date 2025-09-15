@@ -1,0 +1,41 @@
+{
+  "name": "favicon-factory",
+  "version": "1.0.0",
+  "description": "Локальная клиентская генерация фавиконок с drag & drop интерфейсом",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python3 -m http.server 8000",
+    "build": "npm run build:minify && npm run build:formats",
+    "build:minify": "html-minifier-terser --input-dir . --output-dir dist --file-ext html --collapse-whitespace --remove-comments --minify-css true --minify-js true",
+    "build:formats": "node scripts/build-formats.js",
+    "test": "node scripts/test.js",
+    "clean": "rm -rf dist node_modules",
+    "deploy": "npm run build && gh-pages -d dist"
+  },
+  "keywords": [
+    "favicon",
+    "icon",
+    "generator",
+    "pwa",
+    "web-app-manifest",
+    "drag-drop",
+    "client-side"
+  ],
+  "author": "Favicon Factory",
+  "license": "MIT",
+  "devDependencies": {
+    "html-minifier-terser": "^7.2.0",
+    "clean-css-cli": "^5.6.2",
+    "terser": "^5.24.0",
+    "gh-pages": "^6.0.0"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/favicon-factory.git"
+  },
+  "homepage": "https://yourusername.github.io/favicon-factory",
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
